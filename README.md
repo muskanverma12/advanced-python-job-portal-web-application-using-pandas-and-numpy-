@@ -1,0 +1,2 @@
+# advanced-python-job-portal-web-application-using-pandas-and-numpy-
+ built a Job Portal using Flask with a Pandas-based backend. Users can register, recruiters can post jobs, and candidates can apply. Data is stored in CSV files (users.csv, jobs.csv, applications.csv) and managed using Pandas for efficient operations. Features like job details, applications, and editing jobs are handled through Pandas dataframes.
