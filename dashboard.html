@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard-page">
+    <div class="container">
+        <h1>Welcome, {{ user.name }} ({{ user.role }})</h1>
+
+        {% if user.role == 'recruiter' %}
+            <h2>Post a Job</h2>
+            <form method="POST">
+                <input type="text" name="title" placeholder="Job Title" required>
+                <textarea name="description" placeholder="Job Description" required></textarea>
+                <input type="text" name="company" placeholder="Company Name" required>
+                <input type="text" name="salary" placeholder="Salary" required>
+                <button type="submit">Post Job</button>
+            </form>
+
+            <h2>Your Jobs</h2>
+            {% for job in jobs %}
+                {% if job.posted_by == user.name %}
+                    <div class="job-card">
+                        <h3>{{ job.title }}</h3>
+                        <p>{{ job.company }} | ₹{{ job.salary }}</p>
+                        <p>{{ job.description }}</p>
+                        <a href="/job/{{ job.id }}"><button>View Details</button></a>
+                        <a href="/edit_job/{{ job.id }}"><button>Edit</button></a>
+                        <form method="POST" action="/delete/job/{{ job.id }}">
+                            <button type="submit" style="background-color: #dc3545;">Delete Job</button>
+                        </form>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            <h2>Applicants for Your Jobs</h2>
+            {% for app in applied_users %}
+                <div class="job-card">
+                    <p><strong>{{ app.applicant_name }}</strong> ({{ app.applicant_email }}) applied for <strong>{{ app.job_title }}</strong></p>
+                </div>
+            {% endfor %}
+
+            <h2>Delete Your Account</h2>
+            <form method="POST" action="/delete/recruiter/{{ user.id }}">
+                <button type="submit" style="background-color: #dc3545;">Delete My Recruiter Account</button>
+            </form>
+
+        {% endif %}
+
+        {% if user.role == 'seeker' %}
+            <h2>Available Jobs</h2>
+            {% for job in jobs %}
+                <div class="job-card">
+                    <h3>{{ job.title }}</h3>
+                    <p>{{ job.company }} | ₹{{ job.salary }}</p>
+                    <p>{{ job.description }}</p>
+                    <a href="/job/{{ job.id }}"><button>View Details</button></a>
+                    <form method="POST" action="/apply/job/{{ job.id }}">
+                        <input type="hidden" name="user_id" value="{{ user.id }}">
+                        <button type="submit">Apply</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <a href="/logout"><button style="background-color: #6c757d;">Logout</button></a>
+    </div>
+</body>
+</html>
